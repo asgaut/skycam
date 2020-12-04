@@ -1,0 +1,16 @@
+# base-image for debian buster on any machine using a template variable,
+# see more about dockerfile templates here: https://www.balena.io/docs/learn/develop/dockerfile/#dockerfile-templates
+# and about balena base images here: https://www.balena.io/docs/reference/base-images/base-images/
+FROM balenalib/%%BALENA_MACHINE_NAME%%-debian:buster-run
+
+# Balena recommends `install_packages` if you need to install dependencies
+# -build images already have build-essential and git installed
+# See here: https://github.com/balena-io-library/base-images/blob/master/balena-base-images/armv7hf/debian/buster/build/Dockerfile#L54
+RUN install_packages openssh-client
+
+# Defines our working directory in container
+WORKDIR /app
+
+COPY start.sh .
+
+CMD ["bash", "start.sh"]

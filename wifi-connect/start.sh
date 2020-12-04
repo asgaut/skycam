@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+export DBUS_SYSTEM_BUS_ADDRESS=unix:path=/host/run/dbus/system_bus_socket
+
+while [[ true ]]; do
+  # Choose a condition for running WiFi Connect according to your use case:
+
+  # 1. Is there a default gateway?
+  # ip route | grep default
+
+  # 2. Is there Internet connectivity?
+  # nmcli -t g | grep full
+
+  # 3. Is there Internet connectivity via a google ping?
+  # wget --spider http://google.com 2>&1
+
+  # 4. Is there an active WiFi connection?
+  iwgetid -r > /dev/null
+
+  if [ $? -ne 0 ]; then
+      printf 'Starting WiFi Connect\n'
+      # Start wifi-connect with SSID "skycam", Password "fireball" and make it exit if no interaction happens within 10 minutes.
+      ./wifi-connect -a 600 -s skycam -p fireball
+  fi
+
+  # wait 1 minute before checking again for internet connectivity
+  sleep 60
+done
